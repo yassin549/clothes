@@ -1,0 +1,47 @@
+services:
+  # A PostgreSQL database
+  - type: psql
+    name: database
+    plan: starter
+    postgresMajorVersion: 16
+
+  # The Evershop web service
+  - type: web
+    name: evershop-app
+    env: node
+    plan: starter
+    branch: main # or your default branch
+    healthCheckPath: / 
+    buildCommand: "npm install && npm run compile && npm run build"
+    startCommand: "npm run start"
+    envVars:
+      - key: DB_HOST
+        fromService:
+          type: psql
+          name: database
+          property: host
+      - key: DB_PORT
+        fromService:
+          type: psql
+          name: database
+          property: port
+      - key: DB_USER
+        fromService:
+          type: psql
+          name: database
+          property: user
+      - key: DB_PASSWORD
+        fromService:
+          type: psql
+          name: database
+          property: password
+      - key: DB_NAME
+        fromService:
+          type: psql
+          name: database
+          property: database
+      # Admin credentials as requested
+      - key: ADMIN_EMAIL
+        value: khoualdiyassin26@gmail.com
+      - key: ADMIN_PASSWORD
+        value: admin123
